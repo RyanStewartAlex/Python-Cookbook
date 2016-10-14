@@ -1,35 +1,19 @@
 import random
 import sys
 import os
+import math
+from itertools import count, cycle, repeat, takewhile, chain
 
 '''
 Resources
 -------------
-*Created by Ryan Stewart September 16th, 2016
-*More can be found at http://www.ryanstewart.tk
+*Created by Ryan Stewart on September 16, 2016
+*More can be found at http://www.ryanstewart.pw/
 
 Summary: A basic cookbook for Python to reference later
 
-What it covers:
-    - Arithmetic
-    - Strings
-    - Lists (Arrays)
-    - Tuples
-    - Dictionary
-    - Conditionals
-    - Loops
-    - Functions
-    - User input
-    - String functions
-    - File I/O
-    - Classes and Objects
-    - Constructors
-    - Inheritance
-    - Overwriting functions
-    - Overloading functions
-    - Polymorphism
+Last updated: October 13, 2016
 '''
-
 
 #--Arithmetic--#
 a = 10
@@ -61,7 +45,7 @@ print("This is a normal string")
 #Quotes inside of a string
 print("\"This is quoted\"")
 #multi-line quotes
-print('''This
+print('''ThisWW
 is a multi-lined
 quote''')
 print("This\nIs\nalso multi-lined")
@@ -118,6 +102,20 @@ print(nick_names.get("Michael"))
 print(len(nick_names))
 
 
+#--Sets--#
+#like lists, but can't be indexed and can't contain repeating items
+nums2 = {1, 2, 3, 4, 5, 6, 7}
+nums3 = {81, 92, 100, 234, 31, 4, 5}
+#union operator - combines two sets
+print(nums2 | nums3)
+#intersection operator - gets items only in both
+print(nums2 & nums3)
+#difference operator - gets items in the first but not in the second
+print(nums2 - nums3)
+#symmetric operator - gets items in either set, but not both
+print(nums2 ^ nums3)
+
+
 #--Conditionals--#
 #if
 if (1 == 1):
@@ -172,6 +170,68 @@ def add_numbers(num1, num2):
 print(add_numbers(10, 300))
 
 
+#--Iter Tools--#
+#count() counts up infinitely from a value
+for num in count(3):
+	print(num)
+	if num > 10:
+		break
+#cycle() iterates through an iterable infinitely
+i = 0
+for ch in cycle("Ryan"):
+	i += 1
+	print(ch)
+	if i > 15:
+		break
+#repeat() repeats an object either infinitely or for a number of times.
+for n in repeat(17171717, 3):
+	print(n)
+#takewhile() takes items from an iterable while a func remains true
+
+
+
+#--Anonymous Functions--#
+'''
+These are functions that don't have a name.
+
+Why? It's a smaller way to write functions that only have one line inside.
+
+It's in "(lambda: <var>: <var>*2)(3) format."
+'''
+#the example for regular functions above can be written as:
+print((lambda x, y: x + y)(10, 300))
+#or one that gets the sqrt of a number
+print((lambda n: math.sqrt(n))(6))
+#or one that cubes a number
+print((lambda e: e ** 3)(7))
+#can also declare it
+triple = (lambda v: v * 3)
+print(triple(7))
+
+
+#--Map and Filter--#
+#maps apply a function to an iterable
+itera = range(11)
+lollambda = lambda b: b ** 2
+print(map(lollambda, itera))
+#filters remove items from an iterable that don't match a function
+nums = range(16)
+isodd = lambda d: not d % 2 == 0
+print(filter(isodd, nums))
+
+
+#--Generators--#
+#Type of iterable, but don't allow indexing. Iterated w/ for loops. Have no limit.
+def my_generator():
+	i = 5
+	while i > 0:
+		yield i #"yield" makes it a generator
+		i -= 1
+
+for i in my_generator():
+	print(i)
+
+
 #--Input--#
 '''
 b = raw_input("This is a prompt. Enter something here: ")
@@ -224,108 +284,68 @@ os.remove("test.txt")
 '''
 
 
-#--Classes / Objects--#
-#declaring
-class Animal:
-    __name = "" #underscores mean it's private and therefor needs a method in side to set them
-    __height = 0
-    __weight = 0
-    __sound = ""
-
-    def __init__(self, name, height, weight, sound): #constuctor
-        self.__name = name
-        self.__height = height
-        self.__weight = weight
-        self.__sound = sound
-
-    def set_name(self, name): #encapsulation
-        self.__name = name
-
-    def get_name(self):
-        return self.__name
-
-    def set_height(self, height):
-        self.__height = height
-
-    def get_height(self):
-        return self.__height
-
-    def set_weight(self, weight):
-        self.__weight = weight
-
-    def get_weight(self):
-        return self.__weight
-
-    def set_sound(self, sound):
-        self.__sound = sound
-
-    def get_sound(self):
-        return self.__sound
-
-    def get_type(self):
-        print("Animal")
-
-    def toString(self):
-        return "{} is {} cm tall and {} kilograms and says {}".format(self.__name,
-                                                                      self.__height,
-                                                                      self.__weight,
-                                                                      self.__sound)
-
-#create object
-cat = Animal("Canned Food Kitty", 33, 100, "Meow")
-print(cat.toString())
-
-
-#--Inheritance--#
-class Dog(Animal): #creates dog class with everything from animal class
-    __owner = ""
-
-    def __init__(self, name, height, weight, sound, owner): #overwrite constructor
-        self.__owner = owner
-        super(Dog, self).__init__(name, height, weight, sound)
-
-    def set_owner(self, owner):
-        self.__owner = owner
-
-    def get_owner(self):
-        return self.__owner
-
-    def get_type(self):
-        print("Dog")
-
-    def toString(self):
-        return "{} is {} cm tall and {} kilograms and says {}. His owner is {}".format(self.__name,
-                                                                      self.__height,
-                                                                      self.__weight,
-                                                                      self.__sound,
-                                                                      self.__owner)
-
-    #--Overloading--#
-    def multiple_sounds(self, how_many=None): #attributes set to "None" can be set or not
-        if how_many is None:
-            print(self.get_sound())
-        else:
-            print(self.get_sound() * how_many)
-
-#create object spot of the dog class
-spot = Dog("Spot", 40, 100, "Chris")
-print(spot.toString())
-
-
-#--Polymorphism--#
+#--Regex--#
 '''
-What does it mean?
-    - automatically call the correct functions based on data type
-    ex: call the same function with a string, int, float, or double.
+What is it?
+	- way to search/munipulate a string based on a pattern.
+
+I ALREADY COVERED THIS IN ANOTHER REPO, CHECK IT OUT HERE:
+https://github.com/RyanStewartAlex/Python-Regex-Tutorial/blob/master/pythonregex.py
 '''
 
-class AnimalTesting:
-    def get_type(self, Animal):
-        Animal.get_type()
 
-test_animals = AnimalTesting()
-test_animals.get_type(cat) #prints "Animal"
-test_animals.get_type(spot) #prints "Dog"
+#--Classes--#
+#Describes what an object will be
+class animal:
+	mammal = True
+	def __init__(self, color, legs, noise): #__init__ is the class constructor (what assigns stuff to the class)
+		self.color = color #the arguments above equal to what was entered.
+		self.legs = legs
+		self.noise = noise
 
-spot.multiple_sounds(4)
-spot.multiple_sounds()
+	def sayNoise(self): #all functions must take the argument "self"
+		print(self.noise)
+
+dog = animal("brown", 4, "borf")
+dog.sayNoise()
+print(dog.mammal)
+
+
+#--Inhertiance--#
+#create class
+class camera:
+	def __init__(self, brand, color):
+		self.brand = "Generic"
+		self.color = "Black"
+	def sayBrand(self):
+		print(self.brand)
+#inherit the superclass, and make a class with it. Can make certain functions of that instance.
+class DellCam(camera):
+	def sayBrand(self):
+		print("Dell")
+	def sayGenericBrand(self):
+		camera.sayBrand(self) #Could do same thing with the "super()" class
+
+cz800 = DellCam("Dell", "Black")
+cz800.sayBrand()
+cz800.sayGenericBrand()
+
+
+#--Magic Methods--#
+#functions w/ double underscores. Also called "Dunders"
+#include __init__, __add__, __mul__, __sub__ (for -),
+#__truediv__, __floordiv__, __mod__, __pow__, __and__, __xor__ (for ^), __or__,
+#__lt__ (for <), __le__ for (<=), __eq__, __ne__ (for !=), __gt__ (for >), __ge__,
+#__len__,  __getitem__, __setitem__, __delitem__, __iter__, __contains__
+class computer:
+	def __init__(self, brand): #__init__ and __add__ are both magic methods.
+		self.brand = brand
+
+	def __add__(self, other): #__add__ detects when something was added and runs
+		#return self + other
+		return computer(self + other) #TODO: Fix
+
+myComputer = computer("NZXT")
+JohnComputer = computer("Alienware")
+added = myComputer + JohnComputer
+print(added)
