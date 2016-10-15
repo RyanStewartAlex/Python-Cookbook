@@ -1,3 +1,4 @@
+import this
 import random
 import sys
 import os
@@ -12,8 +13,25 @@ Resources
 
 Summary: A basic cookbook for Python to reference later
 
-Last updated: October 13, 2016
+Last updated: October 14, 2016
 '''
+
+#--PEP (Naming Conventions--#
+#PEP: Python Enhancement Proposals
+#modules should have a short, all lowercase name.
+#calss names should be in CapWords style
+#most variables and function names should be lowercase_with_underscores
+#constats should be UPPERCASE_WITH_UNDERSCORES
+#space between operators, ex: (10 + 20)
+
+
+
+#--Prevent code from running if imported--#
+if __name__ == "__main__":
+	print("I am not imported")
+else:
+	print("I was imported")
+
 
 #--Arithmetic--#
 a = 10
@@ -49,9 +67,12 @@ print('''ThisWW
 is a multi-lined
 quote''')
 print("This\nIs\nalso multi-lined")
-#format (either work)
+#format (both work)
 print("%s %s" % ("First", "Second"))
 print("{} {}".format("Uno", "Dos"))
+#split string into it's words
+saying = "What goes around comes around.".split() #inide the parenthesis is when to split, ex: "blah.".split('.') would return ["blah", "."]
+print(saying)
 
 
 #--Lists--#
@@ -90,6 +111,16 @@ tList = list(tuple1)
 tList[0] == 100
 tuple1 = tuple(tList)
 #every other munipulation like len(), min(), and max() from lists work with tuples.
+#tuple unpacking
+tuple2 = (6, 7, 8, 9, 0)
+a, b, c, d, e = tuple2
+print(a)
+#make one variable take the rest (ONLY PYTHON 3.0+)
+'''a, b, *c, d = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+print(a)
+print(b)
+print(c)
+print(d)'''
 
 
 #--Dictionaries--#
@@ -136,6 +167,9 @@ if (10 > 10 and 10 < 1):
 #or
 if (10 > 1 or 5 > 1):
     print("One or both is true")
+#ternary operator
+b = 1 if 1 > 2 else 10 #if 1 > 2 then b is 1. Otherwise, b is 10.
+print("B IS EQUAL TO " + str(b))
 
 
 #--Loops--#
@@ -168,6 +202,19 @@ my_function()
 def add_numbers(num1, num2):
     return (num1 + num2)
 print(add_numbers(10, 300))
+#function with an arbitrary number of arguments
+def random_amount(arg1, *args): #*args does it
+	print(arg1)
+random_amount(1, 2, 3, 4, 5, 10, 100)
+#functions with default values
+def cookie(color, choco=True):
+	print(color, choco)
+print(cookie("Brown"))
+print(cookie("Brown", False))
+#funtions with keyword arguments
+def k_test(x, y=7, *args, **kwargs): #**kwargs is what does this
+	print(kwargs) #printing the kwargs returns a dictionary
+k_test(1, 2, 3, a=1, b=2) 
 
 
 #--Iter Tools--#
@@ -341,11 +388,152 @@ class computer:
 	def __init__(self, brand): #__init__ and __add__ are both magic methods.
 		self.brand = brand
 
-	def __add__(self, other): #__add__ detects when something was added and runs
-		#return self + other
-		return computer(self + other) #TODO: Fix
+	def __add__(self, other): #Called when an instance of computer is added
+		return(other.brand)
 
-myComputer = computer("NZXT")
-JohnComputer = computer("Alienware")
-added = myComputer + JohnComputer
-print(added)
+comp1 = computer("Dell")
+comp2 = computer("Alienware")
+print(comp1 + comp2)
+
+#another example
+class makeList():
+	def __init__(self, cont):
+		self.cont = cont 
+
+	def __len__(self):
+		return 0 #will always return 0, doesn't matter how much there actually are.
+
+	def __getitem__(self, index):
+		return "Your index was: " + str(index)
+
+l = makeList([0, 1, 2, 3, 4, 5])
+print(len(l))
+print(l[1])
+
+
+#--Encapsulation (data hiding)--#
+#private methods prevent other classes from accessing that info
+#Most language completely make classes private, but Python it's still possible to get to private classes with outside classes.
+class keyboard:
+
+	__language = "Svenska"
+
+	def __init__(self, maker): 
+		self._hiddenMaker = maker #weakly private Python functions are denoted with '_' before the class
+
+	def setMaker(self, other):
+		self._hiddenMaker = other
+
+	def getMaker(self):
+		return self._hiddenMaker
+
+	def setLanguage(self, other):
+		self.__language = other
+
+	def getLanguage(self):
+		return self.__language
+
+rgb = keyboard("Corsair")
+print(rgb.getMaker())
+print(rgb._hiddenMaker) #Can still get b/c it's weakly private
+print(rgb.getLanguage())
+#print(rgb.__language) (can't get b/c strongly private)
+
+
+#--Class Methods--#
+#classes inside classes that take diff arguments
+class rectangle:
+	def __init__(self, width, height):
+		self.width = width
+		self.height = height
+
+	def getArea(self):
+		return self.width * self.height
+
+	@classmethod #class methods prefixed with the @classmethod decorator
+	def square(cls, sideLength):
+		return cls(sideLength, sideLength)
+
+	@staticmethod #static methods are like regular functions, except than can belong to an instance. Don't require any additional arguments.
+	def colorList(colors):
+		for color in colors: #generator
+			yield color
+
+square1 = rectangle.square(10)
+print(square1.getArea())
+#Read from a generator
+c = rectangle.colorList(["Yellow", "Orange", "Blue"])
+for generated in c:
+	print(generated)
+
+
+#--Freeing Memory--#
+a = 12
+del a #automatically deleted if a were to reach 0
+
+
+#--Properties--#
+#Create attributes to an object
+#requires the "@property" decorator
+class pizza:
+	def __init__(self, toppings):
+		self.toppings = toppings
+
+	@property
+	def meatLoversAllowed(self):
+		return False
+
+	@meatLoversAllowed.setter
+	def meatLoversAllowed(self, x):
+		self.meatLoversAllowed = self.x
+
+p1 = pizza(["Meat", "Pineapple", "Peperoni"])
+print(p1.meatLoversAllowed)
+p1.meatLoversAllowed = True
+print(p1.meatLoversAllowed)
+
+
+#--Major External Libraries--#
+#Django for web framework (Instagram and Disqus uses it)
+#BeautifulSoup for web scraping
+#Matplotlib to make graphs from data in Python
+#NumPy for multidimensional arrays instead of nested lists
+#Panda3D for 3D games.
+#Pygame for 2D games.
+
+
+#--Packaging--#
+'''
+What is it?
+	- putting modules in standard form for distribution
+	- First, organize your files correctly
+		- Put all files in the same directory
+		- Put an __init__.py file in the same directory (doesn't matter if empty or not)
+		- Put that directory in a new directory with the README, licensing info, and setup.py
+		- An example would be:
+			MyProgram/
+				LICENSE.txt
+				README.txt
+				setup.py
+				myprogram/
+					__init__.py
+					firstfile.py
+					secondfile.py
+
+	- setup the "setup.py" file.
+		- an example would be:
+			from distutils.core import setup
+
+			setup(
+				name='MyProgram'
+				version='0.1dev'
+				packages=['MyProgram']
+				license='MIT'
+				long_description=open('README.txt').read()
+			)
+
+	- Upload your packaged program to PyPI or use CMD to greate a binary distribution (installer)
+		- To create a binary distribution in CMD:
+			- go to the directory with the setup.py
+			- run "python setup.py sdist"
+			- run "python setup.py bdist_wininst"
